@@ -7,7 +7,7 @@ import re
 
 APP_ID = '14405891'
 API_KEY = 'tanseQfGI8w8eCU1ef61Mw6l'
-SECRET_KEY = 'AxBFOjikG4FoewD2AYvyqOVRjHzlVDzC'
+SECRET_KEY = ''
 
 client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
 
