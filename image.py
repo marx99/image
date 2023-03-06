@@ -85,6 +85,34 @@ def find_all_template(imgsrc, imgobj, confidence=0.9):
     return match_result
 
 
+def baidu_ai():
+    """
+    利用百度云识别图片中的文字
+    :return:
+    """
+    from aip import AipOcr
+
+    APP_ID = ''  # 百度云后台获取
+    API_KEY = ''  # 百度云后台获取
+    SECRET_KEY = ''  # 百度云后台获取
+
+    client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+    image = get_file_content('out.jpg')
+
+    """ 调用通用文字识别, 图片参数为本地图片 """
+    return client.basicGeneral(image)
+
+
+def get_file_content(filePath):
+    """
+    读取图片
+    :param filePath:
+    :return:
+    """
+    with open(filePath, 'rb') as fp:
+        return fp.read()
+
+
 if __name__ == '__main__':
     result = find_all_template('0.jpg', '1.jpg')
     print(result)
