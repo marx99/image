@@ -1,71 +1,90 @@
 # -*- coding: utf-8 -*-
 
-# -*- coding: utf-8 -*-
-
-from PIL import Image, ImageDraw, ImageFont
 import aircv as ac
-import cv2
-import numpy as np
-from matplotlib import pyplot as plt
+from PIL import Image, ImageDraw, ImageFont
 
-#在图片上写文字
+
 def write():
+    """
+    在图片上写文字
+    :return:
+    """
     txt = "你这个死宅说话"
     txt2 = "   还挺搞笑的"
-    font_img = Image.open("a2afcc6134a85edfdd475f6845540923df5475d5.jpg")
+    font_img = Image.open("1.jpg")
     draw = ImageDraw.Draw(font_img)
-    ttfront = ImageFont.truetype('./simhei.ttf',20)
-    draw.text((40,60),txt, fill=(0,0,0), font=ttfront)
-    draw.text((60,130),txt2, fill=(0,0,0), font=ttfront)
+    # 指定文字字体
+    ttfront = ImageFont.truetype('./simhei.ttf', 20)
+    draw.text((40, 60), txt, fill=(0, 0, 0), font=ttfront)
+    draw.text((60, 130), txt2, fill=(0, 0, 0), font=ttfront)
     font_img.save("./out.jpg")
-    
-#裁剪
-def imgCut(imgsrc,box,newimagename="cutting.jpg"):
+
+
+def imgCut(imgsrc, box, newimagename="cutting.jpg"):
+    """
+    图片裁剪，从图片上取得部分图片的内容（长方形区域）
+    :param imgsrc:
+    :param box:
+    :param newimagename:
+    :return:
+    """
     im = Image.open(imgsrc)
-    #box = (10,10,100,100)
+    # box = (10,10,100,100)
     region = im.crop(box)
     region.save(newimagename)
 
-#图片的拼合
+
 def paste():
-    img = Image.open("a2afcc6134a85edfdd475f6845540923df5475d5.jpg")
+    """
+    图片的拼合，2个图片拼合到成一个图片
+    :return:
+    """
+    img = Image.open("1.jpg")
     jgz = Image.open("cutting.jpg")
-    img.paste(jgz,(196,139))
-    img.save("./out.jpg")    
+    img.paste(jgz, (196, 139))
+    img.save("./out.jpg")
 
-#查找图片在原始图片上的坐标点
-#https://www.cnblogs.com/meitian/p/7417582.html
-def matchImg(imgsrc,imgobj,confidence=0.9):#imgsrc=原始图像，imgobj=待查找的图片
+
+def matchImg(imgsrc, imgobj, confidence=0.9):
+    """
+    查找图片在原始图片上的坐标点
+    参考资料：https://www.cnblogs.com/meitian/p/7417582.html
+    :param imgsrc:原始图像
+    :param imgobj:待查找的图片
+    :param confidence:
+    :return:
+    """
     imsrc = ac.imread(imgsrc)
     imobj = ac.imread(imgobj)
- 
-    match_result = ac.find_template(imsrc,imobj,confidence)  # {'confidence': 0.5435812473297119, 'rectangle': ((394, 384), (394, 416), (450, 384), (450, 416)), 'result': (422.0, 400.0)}
+
+    match_result = ac.find_template(imsrc, imobj,
+                                    confidence)
+    # sample: {'confidence': 0.5435812473297119, 'rectangle': ((394, 384), (394, 416), (450, 384), (450, 416)), 'result': (422.0, 400.0)}
     if match_result is not None:
-        match_result['shape']=(imsrc.shape[1],imsrc.shape[0])#0为高，1为宽
+        # 添加图片的高和宽
+        match_result['shape'] = (imsrc.shape[1], imsrc.shape[0])  # 0为高，1为宽
 
     return match_result
 
-def find_all_template(imgsrc,imgobj,confidence=0.9):#imgsrc=原始图像，imgobj=待查找的图片
+
+def find_all_template(imgsrc, imgobj, confidence=0.9):
+    """
+    查找图片在原始图片上的坐标点
+    参考资料：https://www.cnblogs.com/meitian/p/7417582.html
+    :param imgsrc:原始图像
+    :param imgobj:待查找的图片
+    :param confidence:
+    :return:
+    """
     imsrc = ac.imread(imgsrc)
     imobj = ac.imread(imgobj)
- 
-    match_result = ac.find_all_template(imsrc,imobj,confidence)  # {'confidence': 0.5435812473297119, 'rectangle': ((394, 384), (394, 416), (450, 384), (450, 416)), 'result': (422.0, 400.0)}
-#    if match_result is not None:
-#        match_result['shape']=(imsrc.shape[1],imsrc.shape[0])#0为高，1为宽
 
+    match_result = ac.find_all_template(imsrc, imobj,
+                                        confidence)
+    # sample：{'confidence': 0.5435812473297119, 'rectangle': ((394, 384), (394, 416), (450, 384), (450, 416)), 'result': (422.0, 400.0)}
     return match_result
 
 
-#paste()
-#im1 = "1f77a900213fb80e4ac8c09c3ad12f2eb83894fb.jpg"
-#im2 = "cutting.jpg"
-#result = matchImg(im1,im2)
-#print(result)
-#    
-#点赞处的icon    
-#imgCut('wechat.jpg',(620,585,672,622),'1.jpg')
-#时间
-#imgCut('wechat.jpg',(110,585,212,622),'time.jpg')  
-    
-result  = find_all_template('wechat.jpg', 'time.jpg')
-print(result)
+if __name__ == '__main__':
+    result = find_all_template('0.jpg', '1.jpg')
+    print(result)
